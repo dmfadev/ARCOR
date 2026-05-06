@@ -3,26 +3,26 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>ARCOR — Control de Merma</title>
+<title>ARCOR — Control de Vencidos y Averiados</title>
 <style>
   :root {
     --azul:        #1a3a6b;
     --azul-medio:  #2d5fa6;
     --azul-claro:  #dce8f7;
     --azul-palido: #f0f5fc;
-    --dorado:      #c8860a;
+    --dorado:      #b87a00;
     --dorado-claro:#fdf3dc;
-    --dorado-borde:#f0c86a;
+    --dorado-borde:#e8c46a;
     --rojo:        #a63228;
     --rojo-claro:  #fdecea;
     --rojo-borde:  #e8a099;
     --verde:       #1e6645;
     --verde-claro: #e6f4ec;
     --verde-borde: #7ec8a0;
-    --gris-fondo:  #f2f4f8;
-    --gris-claro:  #e8eaf0;
+    --gris-fondo:  #f0f2f7;
+    --gris-claro:  #e4e7f0;
     --blanco:      #ffffff;
-    --borde:       #d4d8e2;
+    --borde:       #d0d5e2;
     --texto:       #1c2237;
     --texto-suave: #5c6580;
     --texto-claro: #8a93ad;
@@ -30,21 +30,50 @@
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html, body { min-height: 100vh; background: var(--gris-fondo); font-family: 'Segoe UI', system-ui, sans-serif; font-size: 14px; color: var(--texto); }
 
-  .page { max-width: 700px; margin: 0 auto; padding: 20px 16px 40px; }
+  .page { max-width: 700px; margin: 0 auto; padding: 20px 16px 48px; }
 
-  .container { background: var(--blanco); border-radius: 16px; overflow: hidden; border: 1px solid var(--borde); box-shadow: 0 2px 16px rgba(26,58,107,0.08); }
+  .container { background: var(--blanco); border-radius: 16px; overflow: hidden; border: 1px solid var(--borde); box-shadow: 0 4px 24px rgba(26,58,107,0.10); }
 
-  .header { background: var(--azul); padding: 22px 28px; display: flex; align-items: center; gap: 16px; }
-  .logo-wrap { width: 54px; height: 54px; border-radius: 50%; background: white; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-  .header-info h1 { color: white; font-size: 17px; font-weight: 600; letter-spacing: 0.8px; text-transform: uppercase; }
-  .header-info p { color: rgba(255,255,255,0.55); font-size: 10px; letter-spacing: 2px; margin-top: 3px; text-transform: uppercase; }
+  /* ── HEADER ── */
+  .header {
+    position: relative; overflow: hidden;
+    padding: 28px 32px 24px;
+    background: linear-gradient(135deg, #0d1f3c 0%, #1a3a6b 45%, #1e4d8c 70%, #162f58 100%);
+    display: flex; align-items: center; gap: 20px; min-height: 110px;
+  }
+  .header::before {
+    content: '';
+    position: absolute; inset: 0;
+    background:
+      repeating-linear-gradient(120deg, transparent, transparent 38px, rgba(255,255,255,0.025) 38px, rgba(255,255,255,0.025) 39px),
+      repeating-linear-gradient(60deg,  transparent, transparent 38px, rgba(255,255,255,0.025) 38px, rgba(255,255,255,0.025) 39px);
+    pointer-events: none;
+  }
+  .header::after {
+    content: '';
+    position: absolute; top: -40px; right: -40px;
+    width: 200px; height: 200px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(245,168,0,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .header-logo { position: relative; z-index: 1; flex-shrink: 0; }
+  .header-logo svg { display: block; filter: drop-shadow(0 2px 8px rgba(0,0,0,0.3)); }
+  .header-info { position: relative; z-index: 1; }
+  .header-info h1 { color: white; font-size: 18px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; line-height: 1.2; }
+  .header-info p { color: rgba(255,255,255,0.55); font-size: 10px; letter-spacing: 2.5px; margin-top: 5px; text-transform: uppercase; }
+  .header-shine {
+    position: absolute; top: 0; right: 80px; width: 3px; height: 100%;
+    background: linear-gradient(180deg, transparent, rgba(255,255,255,0.08), transparent);
+    pointer-events: none; z-index: 1;
+  }
 
+  /* ── BODY ── */
   .form-body { padding: 24px 28px 32px; }
 
-  .banner { border-radius: 8px; padding: 11px 16px; margin-bottom: 20px; font-size: 11px; font-weight: 600; text-align: center; text-transform: uppercase; letter-spacing: 1px; border: 1px solid; }
-  .banner.cargando { background: var(--dorado-claro); border-color: var(--dorado-borde); color: var(--dorado); }
-  .banner.ok { background: var(--verde-claro); border-color: var(--verde-borde); color: var(--verde); }
-  .banner.err { background: var(--rojo-claro); border-color: var(--rojo-borde); color: var(--rojo); }
+  .banner { border-radius: 8px; padding: 11px 16px; margin-bottom: 20px; font-size: 11px; font-weight: 600; text-align: center; letter-spacing: 0.5px; border: 1px solid; }
+  .banner.cargando { background: var(--azul-claro); border-color: #b0c8ea; color: var(--azul); }
+  .banner.ok      { background: var(--verde-claro); border-color: var(--verde-borde); color: var(--verde); }
+  .banner.err     { background: var(--rojo-claro);  border-color: var(--rojo-borde);  color: var(--rojo); }
 
   .seccion-titulo { font-size: 10px; font-weight: 700; color: var(--azul-medio); letter-spacing: 2px; margin-bottom: 14px; padding-bottom: 8px; border-bottom: 1.5px solid var(--azul-claro); text-transform: uppercase; }
 
@@ -56,27 +85,30 @@
     background: var(--blanco); outline: none; transition: border-color 0.2s, box-shadow 0.2s;
     -webkit-appearance: none; appearance: none;
   }
-  .campo select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%235c6580' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; padding-right: 36px; }
+  .campo select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%235c6580' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 14px center; padding-right: 36px;
+  }
   .campo input:focus, .campo select:focus { border-color: var(--azul-medio); box-shadow: 0 0 0 3px var(--azul-claro); }
-  .campo input.valido { border-color: var(--verde-borde); background: var(--verde-claro); }
-  .campo input.error-field { border-color: var(--rojo-borde); background: var(--rojo-claro); }
+  .campo input.valido      { border-color: var(--verde-borde); background: var(--verde-claro); }
+  .campo input.error-field { border-color: var(--rojo-borde);  background: var(--rojo-claro); }
 
   .msg-error { color: var(--rojo); font-size: 11px; font-weight: 600; margin-top: 5px; display: none; }
-  .msg-ok { color: var(--verde); font-size: 11px; font-weight: 600; margin-top: 5px; display: none; }
-  .badge-ci { display: inline-block; background: var(--azul-claro); color: var(--azul); font-size: 11px; font-weight: 600; padding: 5px 12px; border-radius: 6px; margin-top: 7px; border: 1px solid #b0c8ea; }
+  .msg-ok    { color: var(--verde); font-size: 11px; font-weight: 600; margin-top: 5px; display: none; }
+  .badge-ci  { display: inline-block; background: var(--azul-claro); color: var(--azul); font-size: 11px; font-weight: 600; padding: 5px 12px; border-radius: 6px; margin-top: 7px; border: 1px solid #b0c8ea; }
 
-  .ac-wrapper { position: relative; }
-  .ac-dropdown { position: absolute; top: calc(100% + 2px); left: 0; right: 0; background: white; border: 1px solid var(--azul-medio); border-radius: 8px; max-height: 200px; overflow-y: auto; z-index: 200; display: none; box-shadow: 0 8px 24px rgba(26,58,107,0.12); }
+  .ac-wrapper   { position: relative; }
+  .ac-dropdown  { position: absolute; top: calc(100% + 2px); left: 0; right: 0; background: white; border: 1px solid var(--azul-medio); border-radius: 8px; max-height: 200px; overflow-y: auto; z-index: 200; display: none; box-shadow: 0 8px 24px rgba(26,58,107,0.12); }
   .ac-dropdown.open { display: block; }
-  .ac-item { padding: 11px 14px; cursor: pointer; font-size: 12px; font-weight: 500; color: var(--texto); border-bottom: 1px solid var(--gris-claro); }
+  .ac-item      { padding: 11px 14px; cursor: pointer; font-size: 12px; font-weight: 500; color: var(--texto); border-bottom: 1px solid var(--gris-claro); }
   .ac-item:last-child { border-bottom: none; }
   .ac-item:hover, .ac-item.hl { background: var(--azul-palido); color: var(--azul); }
-  .ac-vacio { padding: 11px 14px; font-size: 12px; color: var(--texto-claro); font-style: italic; }
+  .ac-vacio     { padding: 11px 14px; font-size: 12px; color: var(--texto-claro); font-style: italic; }
 
   .tabs { display: flex; gap: 8px; margin: 22px 0 16px; }
-  .tab { flex: 1; padding: 12px 8px; border: 1px solid var(--borde); border-radius: 8px; font-weight: 600; font-size: 11px; cursor: pointer; background: var(--gris-fondo); color: var(--texto-suave); font-family: inherit; text-transform: uppercase; letter-spacing: 0.8px; transition: all 0.2s; }
+  .tab  { flex: 1; padding: 12px 8px; border: 1px solid var(--borde); border-radius: 8px; font-weight: 600; font-size: 11px; cursor: pointer; background: var(--gris-fondo); color: var(--texto-suave); font-family: inherit; text-transform: uppercase; letter-spacing: 0.8px; transition: all 0.2s; }
   .tab.act-venc { background: var(--dorado-claro); border-color: var(--dorado-borde); color: var(--dorado); }
-  .tab.act-aver { background: var(--rojo-claro); border-color: var(--rojo-borde); color: var(--rojo); }
+  .tab.act-aver { background: var(--rojo-claro);   border-color: var(--rojo-borde);   color: var(--rojo); }
 
   .panel { display: none; }
   .panel.activo { display: block; }
@@ -84,9 +116,9 @@
   .pregunta-box { background: var(--azul-palido); border: 1px solid var(--azul-claro); border-radius: 10px; padding: 16px; text-align: center; margin-bottom: 16px; }
   .pregunta-box span { font-size: 12px; font-weight: 600; color: var(--azul); text-transform: uppercase; letter-spacing: 0.5px; }
   .btns-sn { display: flex; gap: 10px; max-width: 200px; margin: 12px auto 0; }
-  .btn-sn { flex: 1; padding: 11px; border: 1px solid var(--borde); border-radius: 8px; background: white; cursor: pointer; font-weight: 600; font-size: 12px; font-family: inherit; text-transform: uppercase; transition: all 0.2s; color: var(--texto-suave); }
+  .btn-sn  { flex: 1; padding: 11px; border: 1px solid var(--borde); border-radius: 8px; background: white; cursor: pointer; font-weight: 600; font-size: 12px; font-family: inherit; text-transform: uppercase; transition: all 0.2s; color: var(--texto-suave); }
   .btn-sn.act-si { background: var(--verde-claro); color: var(--verde); border-color: var(--verde-borde); }
-  .btn-sn.act-no { background: var(--rojo-claro); color: var(--rojo); border-color: var(--rojo-borde); }
+  .btn-sn.act-no { background: var(--rojo-claro);  color: var(--rojo);  border-color: var(--rojo-borde); }
 
   .productos-seccion { display: none; }
   .producto-row { background: var(--blanco); border: 1px solid var(--borde); border-radius: 10px; padding: 16px; margin-bottom: 12px; position: relative; }
@@ -99,11 +131,11 @@
   @media (max-width: 480px) { .fila-doble { flex-direction: column; } }
 
   .btn-eliminar { position: absolute; top: 12px; right: 12px; background: var(--rojo-claro); color: var(--rojo); border: 1px solid var(--rojo-borde); border-radius: 6px; padding: 5px 10px; font-size: 10px; font-weight: 700; cursor: pointer; font-family: inherit; text-transform: uppercase; letter-spacing: 0.5px; }
-  .btn-agregar { width: 100%; padding: 13px; border: 1.5px dashed var(--borde); border-radius: 8px; background: transparent; color: var(--texto-suave); font-weight: 600; font-size: 12px; cursor: pointer; margin-top: 6px; font-family: inherit; text-transform: uppercase; letter-spacing: 0.5px; transition: all 0.2s; }
+  .btn-agregar  { width: 100%; padding: 13px; border: 1.5px dashed var(--borde); border-radius: 8px; background: transparent; color: var(--texto-suave); font-weight: 600; font-size: 12px; cursor: pointer; margin-top: 6px; font-family: inherit; text-transform: uppercase; letter-spacing: 0.5px; transition: all 0.2s; }
   .btn-agregar:hover { background: var(--azul-palido); border-color: var(--azul-medio); color: var(--azul-medio); }
 
   .checklist { background: var(--gris-fondo); border: 1px solid var(--borde); border-radius: 8px; padding: 12px 14px; margin-top: 6px; }
-  .chk-item { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 9px; cursor: pointer; font-size: 12px; font-weight: 500; color: var(--texto); line-height: 1.4; }
+  .chk-item   { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 9px; cursor: pointer; font-size: 12px; font-weight: 500; color: var(--texto); line-height: 1.4; }
   .chk-item:last-child { margin-bottom: 0; }
   .chk-item input[type="checkbox"] { width: 16px; height: 16px; min-width: 16px; margin-top: 1px; cursor: pointer; accent-color: var(--azul-medio); }
   .input-otros { margin-top: 8px; display: none; width: 100%; padding: 10px 13px; border: 1px solid var(--borde); border-radius: 6px; font-size: 12px; font-family: inherit; text-transform: uppercase; outline: none; background: white; }
@@ -112,14 +144,14 @@
   .divider { border: none; border-top: 1px solid var(--gris-claro); margin: 22px 0; }
 
   .btn-enviar { width: 100%; padding: 16px; background: var(--azul); color: white; border: none; border-radius: 10px; font-size: 14px; font-weight: 700; cursor: pointer; font-family: inherit; letter-spacing: 1px; text-transform: uppercase; margin-top: 6px; transition: background 0.2s; }
-  .btn-enviar:hover { background: var(--azul-medio); }
+  .btn-enviar:hover    { background: var(--azul-medio); }
   .btn-enviar:disabled { background: var(--texto-claro); cursor: not-allowed; }
 
-  .toast { display: none; text-align: center; padding: 13px 16px; font-weight: 600; font-size: 12px; border-radius: 8px; margin-top: 12px; text-transform: uppercase; letter-spacing: 0.8px; border: 1px solid; }
-  .toast.visible { display: block; }
-  .toast.ok { background: var(--verde-claro); color: var(--verde); border-color: var(--verde-borde); }
-  .toast.err { background: var(--rojo-claro); color: var(--rojo); border-color: var(--rojo-borde); }
-  .toast.cargando { background: var(--azul-claro); color: var(--azul); border-color: #b0c8ea; }
+  .toast { display: none; text-align: center; padding: 13px 16px; font-weight: 600; font-size: 12px; border-radius: 8px; margin-top: 12px; letter-spacing: 0.5px; border: 1px solid; }
+  .toast.visible   { display: block; }
+  .toast.ok        { background: var(--verde-claro); color: var(--verde); border-color: var(--verde-borde); }
+  .toast.err       { background: var(--rojo-claro);  color: var(--rojo);  border-color: var(--rojo-borde); }
+  .toast.cargando  { background: var(--azul-claro);  color: var(--azul);  border-color: #b0c8ea; }
 
   .footer { text-align: center; padding: 14px 20px; font-size: 10px; color: var(--texto-claro); text-transform: uppercase; letter-spacing: 1px; border-top: 1px solid var(--gris-claro); }
 </style>
@@ -129,30 +161,44 @@
   <div class="container">
 
     <div class="header">
-      <div class="logo-wrap">
-        <svg width="44" height="44" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-          <ellipse cx="100" cy="105" rx="90" ry="78" fill="#003087"/>
-          <ellipse cx="100" cy="98" rx="82" ry="70" fill="#0046b8"/>
-          <path d="M30 130 Q100 40 170 130" fill="none" stroke="#F5A800" stroke-width="22" stroke-linecap="round"/>
-          <text x="100" y="145" text-anchor="middle" font-family="Arial Black,sans-serif" font-size="38" font-weight="900" fill="white" letter-spacing="-1">ARCOR</text>
+      <div class="header-shine"></div>
+      <div class="header-logo">
+        <svg width="64" height="64" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <radialGradient id="bg" cx="45%" cy="40%">
+              <stop offset="0%" stop-color="#1a6dd4"/>
+              <stop offset="100%" stop-color="#003087"/>
+            </radialGradient>
+            <radialGradient id="shine" cx="35%" cy="30%">
+              <stop offset="0%" stop-color="rgba(255,255,255,0.3)"/>
+              <stop offset="100%" stop-color="rgba(255,255,255,0)"/>
+            </radialGradient>
+          </defs>
+          <ellipse cx="100" cy="108" rx="94" ry="82" fill="rgba(0,0,0,0.2)"/>
+          <ellipse cx="100" cy="104" rx="94" ry="82" fill="url(#bg)"/>
+          <ellipse cx="100" cy="104" rx="94" ry="82" fill="url(#shine)"/>
+          <ellipse cx="100" cy="104" rx="94" ry="82" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="2"/>
+          <path d="M24 136 Q100 38 176 136" fill="none" stroke="#F5A800" stroke-width="24" stroke-linecap="round"/>
+          <path d="M24 136 Q100 38 176 136" fill="none" stroke="#FFD050" stroke-width="8" stroke-linecap="round" opacity="0.5"/>
+          <text x="100" y="150" text-anchor="middle" font-family="Arial Black,Impact,sans-serif" font-size="42" font-weight="900" fill="white" letter-spacing="-1" style="text-shadow:0 2px 4px rgba(0,0,0,0.5)">ARCOR</text>
         </svg>
       </div>
       <div class="header-info">
-        <h1>Control de Merma</h1>
+        <h1>Control de Vencidos<br>y Averiados</h1>
         <p>Sistema de relevamiento — ARCOR</p>
       </div>
     </div>
 
     <div class="form-body">
 
-      <div class="banner cargando" id="banner">Cargando datos desde Google Sheets...</div>
+      <div class="banner cargando" id="banner">Conectando con el sistema, por favor espere...</div>
 
       <div class="seccion-titulo">Identificacion del repositor</div>
 
       <div class="campo">
         <label>Codigo / CI del repositor</label>
         <input type="number" id="ci-input" placeholder="Ej: 4627245" oninput="validarCI(this)" autocomplete="off" inputmode="numeric">
-        <div class="msg-error" id="ci-error">CI no encontrado en el sistema</div>
+        <div class="msg-error" id="ci-error">El codigo ingresado no esta registrado en el sistema</div>
         <div class="msg-ok" id="ci-ok">Repositor identificado correctamente</div>
         <div id="ci-badge"></div>
       </div>
@@ -203,13 +249,12 @@
       <div class="toast" id="toast"></div>
 
     </div>
-
-    <div class="footer">ARCOR &copy; 2025 &mdash; Sistema de Control de Merma</div>
+    <div class="footer">ARCOR &copy; 2025 &mdash; Sistema de Control de Vencidos y Averiados</div>
   </div>
 </div>
 
 <script>
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyvo_cLB1UUe0Vf7c41-JdqzFsqBwqy0RJtPJ9ZQjcKOgZu6Z8jqYguY-hhM2BS4qP6/exec';
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyf5TD72H6FvQ9nGmTOG31bBzDYgoBoJHpR09CbRLYkHzYshISsaUuSPiNvqecH7GwM/exec';
 
 const MOTIVOS = [
   "Caja mojada",
@@ -225,25 +270,37 @@ let respuestas = { venc: null, aver: null };
 let contadores = { venc: 0, aver: 0 };
 let hlProd = {};
 
+function jsonp(url, callbackName) {
+  return new Promise((resolve, reject) => {
+    const script = document.createElement('script');
+    window[callbackName] = function(data) {
+      resolve(data);
+      delete window[callbackName];
+      document.body.removeChild(script);
+    };
+    script.src = url + (url.includes('?') ? '&' : '?') + 'callback=' + callbackName;
+    script.onerror = () => { reject(new Error('Error de red')); delete window[callbackName]; document.body.removeChild(script); };
+    document.body.appendChild(script);
+  });
+}
+
 async function cargarDatos() {
   const banner = document.getElementById('banner');
   try {
-    const res = await fetch(SCRIPT_URL + '?v=' + Date.now());
-    const data = await res.json();
+    const data = await jsonp(SCRIPT_URL, 'cbDatos_' + Date.now());
     REPOSITORES = data.repositores || [];
-    PRODUCTOS = data.productos || [];
+    PRODUCTOS   = data.productos   || [];
     const sel = document.getElementById('pdv');
     sel.innerHTML = '<option value="">Seleccionar punto de venta...</option>';
     (data.pdvs || []).forEach(p => {
       const o = document.createElement('option');
-      o.value = p; o.textContent = p;
-      sel.appendChild(o);
+      o.value = p; o.textContent = p; sel.appendChild(o);
     });
-    banner.textContent = 'Datos cargados correctamente — ' + REPOSITORES.length + ' repositores · ' + PRODUCTOS.length + ' productos · ' + (data.pdvs||[]).length + ' puntos de venta';
+    banner.textContent = 'Sistema listo — ' + REPOSITORES.length + ' repositores · ' + PRODUCTOS.length + ' productos · ' + (data.pdvs||[]).length + ' puntos de venta';
     banner.className = 'banner ok';
     setTimeout(() => banner.style.display = 'none', 5000);
   } catch(err) {
-    banner.textContent = 'Error al cargar datos. Verifique su conexion e intente recargar la pagina.';
+    banner.innerHTML = 'No pudimos conectar con el sistema en este momento.<br>Por favor verifique su conexion a internet y recargue la pagina. Si el problema persiste, intente en unos minutos.';
     banner.className = 'banner err';
   }
 }
@@ -252,18 +309,16 @@ function validarCI(input) {
   const ci = String(input.value).trim();
   const repo = REPOSITORES.find(r => String(r.ci).trim() === ci);
   const err = document.getElementById('ci-error');
-  const ok = document.getElementById('ci-ok');
-  const badge = document.getElementById('ci-badge');
+  const ok  = document.getElementById('ci-ok');
+  const badge    = document.getElementById('ci-badge');
   const campoPdv = document.getElementById('campo-pdv');
   if (ci.length >= 6) {
     if (repo) {
-      input.className = 'valido';
-      err.style.display = 'none'; ok.style.display = 'block';
+      input.className = 'valido'; err.style.display = 'none'; ok.style.display = 'block';
       badge.innerHTML = '<span class="badge-ci">' + repo.nombre + '</span>';
       repoActivo = repo; campoPdv.style.display = 'block';
     } else {
-      input.className = 'error-field';
-      ok.style.display = 'none'; err.style.display = 'block';
+      input.className = 'error-field'; ok.style.display = 'none'; err.style.display = 'block';
       badge.innerHTML = ''; repoActivo = null; campoPdv.style.display = 'none';
     }
   } else {
@@ -303,7 +358,6 @@ function agregarFila(tipo) {
   const div = document.createElement('div');
   div.className = 'producto-row tipo-'+tipo;
   div.id = 'row-'+uid;
-
   const campoExtra = tipo === 'venc'
     ? `<div class="campo"><label>Fecha de vencimiento</label><input type="date" class="p-fecha" required></div>`
     : `<div class="campo"><label>Motivo de averia</label>
@@ -313,17 +367,14 @@ function agregarFila(tipo) {
             <span>${m}</span></label>`).join('')}
           <input type="text" class="input-otros" id="otros-${uid}" placeholder="Especificar motivo..." oninput="this.value=this.value.toUpperCase()">
         </div></div>`;
-
   div.innerHTML = `
-    <div class="row-num">Producto N° ${n}</div>
+    <div class="row-num">Producto N&deg; ${n}</div>
     <button type="button" class="btn-eliminar" onclick="document.getElementById('row-${uid}').remove()">Eliminar</button>
     <div class="campo">
       <label>Producto</label>
       <div class="ac-wrapper">
         <input type="text" class="p-prod" placeholder="Buscar producto..." autocomplete="off"
-          oninput="filtrarProd(this,'${uid}')"
-          onkeydown="navProd(event,'${uid}')"
-          onfocus="filtrarProd(this,'${uid}')">
+          oninput="filtrarProd(this,'${uid}')" onkeydown="navProd(event,'${uid}')" onfocus="filtrarProd(this,'${uid}')">
         <div class="ac-dropdown" id="drop-${uid}"></div>
       </div>
     </div>
@@ -370,8 +421,8 @@ function toggleOtros(uid, chk) {
 
 function mostrarToast(msg, tipo) {
   const t = document.getElementById('toast');
-  t.textContent = msg; t.className = 'toast visible ' + tipo;
-  if (tipo !== 'cargando') setTimeout(() => t.className = 'toast', 6000);
+  t.innerHTML = msg; t.className = 'toast visible ' + tipo;
+  if (tipo !== 'cargando') setTimeout(() => t.className = 'toast', 7000);
 }
 
 function resetFormulario() {
@@ -393,9 +444,9 @@ function resetFormulario() {
 }
 
 async function enviarFormulario() {
-  if (!repoActivo) { mostrarToast('Ingrese un CI valido de repositor', 'err'); return; }
-  if (!document.getElementById('pdv').value) { mostrarToast('Seleccione un punto de venta', 'err'); return; }
-  if (respuestas.venc === null || respuestas.aver === null) { mostrarToast('Debe responder ambas secciones: Vencidos y Averiados', 'err'); return; }
+  if (!repoActivo) { mostrarToast('Por favor ingrese un CI valido antes de continuar', 'err'); return; }
+  if (!document.getElementById('pdv').value) { mostrarToast('Por favor seleccione un punto de venta', 'err'); return; }
+  if (respuestas.venc === null || respuestas.aver === null) { mostrarToast('Complete ambas secciones: Vencidos y Averiados', 'err'); return; }
 
   const vencidos = [], averiados = []; let hayError = false;
 
@@ -418,12 +469,13 @@ async function enviarFormulario() {
     averiados.push({ producto: prod, motivo: motivos.join(' | '), cantidad: r.querySelector('.p-cant').value });
   });
 
-  if (hayError) { mostrarToast('Complete todos los campos de producto', 'err'); return; }
+  if (hayError) { mostrarToast('Complete el campo de producto en todas las filas', 'err'); return; }
   if (respuestas.venc && vencidos.length === 0) { mostrarToast('Agregue al menos un producto vencido', 'err'); return; }
   if (respuestas.aver && averiados.length === 0) { mostrarToast('Agregue al menos un producto averiado', 'err'); return; }
 
   const btn = document.getElementById('btn-enviar');
-  btn.disabled = true; mostrarToast('Enviando reporte...', 'cargando');
+  btn.disabled = true;
+  mostrarToast('Enviando reporte, por favor espere...', 'cargando');
 
   const payload = {
     ci: repoActivo.ci, repositor: repoActivo.nombre,
@@ -438,11 +490,11 @@ async function enviarFormulario() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload)
     });
-    mostrarToast('Reporte enviado correctamente a Google Sheets', 'ok');
+    mostrarToast('El reporte fue enviado correctamente. Muchas gracias.', 'ok');
     btn.disabled = false; btn.textContent = 'Enviar Reporte';
-    setTimeout(() => resetFormulario(), 4000);
+    setTimeout(() => resetFormulario(), 5000);
   } catch(err) {
-    mostrarToast('Error de conexion. Verifique su internet e intente nuevamente', 'err');
+    mostrarToast('No se pudo enviar el reporte en este momento.<br>Verifique su conexion e intente nuevamente.', 'err');
     btn.disabled = false; btn.textContent = 'Enviar Reporte';
   }
 }
