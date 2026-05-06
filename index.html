@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>ARCOR — Control de Merma</title>
+<style>
+  :root {
+    --arcor-azul: #003087;
+    --arcor-azul-oscuro: #00205a;
+    --arcor-dorado: #F5A800;
+    --arcor-dorado-claro: #fff8e7;
+    --rojo: #c0392b;
+    --rojo-claro: #fdf0ef;
+    --verde: #1a7a4a;
+    --verde-claro: #d1fae5;
+    --gris-fondo: #f4f5f7;
+    --blanco: #ffffff;
+    --borde: #e0e4ea;
+    --texto: #1a1f2e;
+    --texto-suave: #5a6070;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { min-height: 100vh; background: var(--gris-fondo); font-family: 'Segoe UI', Tahoma, sans-serif; font-size: 14px; color: var(--texto); }
+  .page { max-width: 680px; margin: 0 auto; padding: 16px; }
+  .container { background: var(--blanco); border-radius: 18px; overflow: hidden; box-shadow: 0 6px 32px rgba(0,48,135,0.12); }
+  .header { background: var(--arcor-azul); padding: 24px 28px 20px; display: flex; align-items: center; gap: 18px; }
+  .logo-circle { width: 60px; height: 60px; border-radius: 50%; background: white; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .header-text h1 { color: white; font-size: 18px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; }
+  .header-text p { color: rgba(255,255,255,0.65); font-size: 11px; letter-spacing: 2px; margin-top: 4px; text-transform: uppercase; }
+  .form-body { padding: 22px 24px 28px; }
+  .banner { border-radius: 8px; padding: 12px 16px; margin-bottom: 18px; font-size: 12px; font-weight: 700; text-align: center; text-transform: uppercase; letter-spacing: 1px; }
+  .banner.cargando { background: var(--arcor-dorado-claro); border: 1.5px solid var(--arcor-dorado); color: var(--arcor-azul); }
+  .banner.ok { background: var(--verde-claro); border: 1.5px solid var(--verde); color: var(--verde); }
+  .banner.err { background: var(--rojo-claro); border: 1.5px solid var(--rojo); color: var(--rojo); }
+  .seccion-titulo { font-size: 10px; font-weight: 700; color: var(--arcor-azul); letter-spacing: 2.5px; margin-bottom: 12px; padding-bottom: 7px; border-bottom: 2.5px solid var(--arcor-dorado); display: flex; align-items: center; gap: 7px; text-transform: uppercase; }
+  .campo { margin-bottom: 16px; }
+  .campo label { display: block; font-size: 10px; font-weight: 700; color: var(--arcor-azul); letter-spacing: 1.5px; margin-bottom: 6px; text-transform: uppercase; }
+  .campo input, .campo select { width: 100%; padding: 13px 15px; border: 1.5px solid var(--borde); border-radius: 9px; font-size: 14px; font-family: inherit; text-transform: uppercase; color: var(--texto); background: white; outline: none; transition: border-color 0.2s; -webkit-appearance: none; }
+  .campo input:focus, .campo select:focus { border-color: var(--arcor-azul); box-shadow: 0 0 0 3px rgba(0,48,135,0.08); }
+  .campo input.valido { border-color: var(--verde); background: #f0faf5; }
+  .campo input.error-field { border-color: var(--rojo); background: var(--rojo-claro); }
+  .msg-error { color: var(--rojo); font-size: 11px; font-weight: 700; margin-top: 5px; display: none; text-transform: uppercase; }
+  .msg-ok { color: var(--verde); font-size: 11px; font-weight: 700; margin-top: 5px; display: none; text-transform: uppercase; }
+  .badge-ci { display: inline-block; background: var(--arcor-dorado-claro); color: var(--arcor-azul); font-size: 11px; font-weight: 700; padding: 5px 12px; border-radius: 5px; margin-top: 7px; text-transform: uppercase; border: 1px solid var(--arcor-dorado); }
+  .ac-wrapper { position: relative; }
+  .ac-dropdown { position: absolute; top: 100%; left: 0; right: 0; background: white; border: 1.5px solid var(--arcor-azul); border-top: none; border-radius: 0 0 9px 9px; max-height: 200px; overflow-y: auto; z-index: 200; display: none; box-shadow: 0 8px 24px rgba(0,48,135,0.12); }
+  .ac-dropdown.open { display: block; }
+  .ac-item { padding: 12px 15px; cursor: pointer; font-size: 13px; font-weight: 600; color: var(--texto); border-bottom: 0.5px solid var(--borde); text-transform: uppercase; }
+  .ac-item:hover, .ac-item.hl { background: var(--arcor-dorado-claro); color: var(--arcor-azul); }
+  .ac-vacio { padding: 12px 15px; font-size: 12px; color: var(--texto-suave); text-transform: none; font-style: italic; }
+  .tabs { display: flex; gap: 10px; margin: 20px 0 16px; }
+  .tab { flex: 1; padding: 14px 8px; border: none; border-radius: 9px; font-weight: 700; font-size: 12px; cursor: pointer; background: #e8eaf0; color: #6b7280; font-family: inherit; text-transform: uppercase; letter-spacing: 0.5px; transition: all 0.2s; }
+  .tab.act-venc { background: var(--arcor-dorado); color: var(--arcor-azul-oscuro); }
+  .tab.act-aver { background: var(--rojo); color: white; }
+  .panel { display: none; }
+  .panel.activo { display: block; }
+  .pregunta-box { background: #f0f4fb; border: 1.5px solid #d0d8ee; border-radius: 11px; padding: 16px; text-align: center; margin-bottom: 14px; }
+  .pregunta-box span { font-size: 13px; font-weight: 700; color: var(--arcor-azul); text-transform: uppercase; letter-spacing: 0.5px; }
+  .btns-sn { display: flex; gap: 12px; max-width: 220px; margin: 12px auto 0; }
+  .btn-sn { flex: 1; padding: 13px; border: 2px solid var(--borde); border-radius: 9px; background: white; cursor: pointer; font-weight: 700; font-size: 13px; font-family: inherit; text-transform: uppercase; transition: all 0.2s; }
+  .btn-sn.act-si { background: var(--verde); color: white; border-color: var(--verde); }
+  .btn-sn.act-no { background: var(--rojo); color: white; border-color: var(--rojo); }
+  .productos-seccion { display: none; }
+  .producto-row { background: white; border: 1.5px solid var(--borde); border-radius: 11px; padding: 16px; margin-bottom: 12px; position: relative; }
+  .producto-row.tipo-venc { border-left: 5px solid var(--arcor-dorado); }
+  .producto-row.tipo-aver { border-left: 5px solid var(--rojo); }
+  .row-num { font-size: 10px; font-weight: 700; color: var(--texto-suave); margin-bottom: 12px; text-transform: uppercase; letter-spacing: 1.5px; }
+  .fila-doble { display: flex; gap: 12px; }
+  .fila-doble > div { flex: 1; }
+  @media (max-width: 480px) { .fila-doble { flex-direction: column; } }
+  .btn-eliminar { position: absolute; top: 12px; right: 12px; background: #fee2e2; color: var(--rojo); border: none; border-radius: 7px; padding: 6px 12px; font-size: 11px; font-weight: 700; cursor: pointer; font-family: inherit; text-transform: uppercase; }
+  .btn-agregar { width: 100%; padding: 14px; border: 2px dashed var(--arcor-azul); border-radius: 9px; background: transparent; color: var(--arcor-azul); font-weight: 700; font-size: 13px; cursor: pointer; margin-top: 8px; font-family: inherit; text-transform: uppercase; transition: background 0.2s; }
+  .btn-agregar:hover { background: #f0f4fb; }
+  .checklist { background: #fafafa; border: 1px solid var(--borde); border-radius: 9px; padding: 12px 14px; margin-top: 7px; }
+  .chk-item { display: flex; align-items: center; gap: 10px; margin-bottom: 9px; cursor: pointer; font-size: 12px; font-weight: 600; text-transform: uppercase; line-height: 1.3; }
+  .chk-item:last-child { margin-bottom: 0; }
+  .chk-item input[type="checkbox"] { width: 18px; height: 18px; min-width: 18px; cursor: pointer; accent-color: var(--arcor-azul); }
+  .input-otros { margin-top: 8px; display: none; width: 100%; padding: 10px 13px; border: 1.5px solid var(--borde); border-radius: 7px; font-size: 13px; font-family: inherit; text-transform: uppercase; outline: none; }
+  .input-otros:focus { border-color: var(--arcor-azul); }
+  .divider { border: none; border-top: 1px solid var(--borde); margin: 20px 0; }
+  .btn-enviar { width: 100%; padding: 18px; background: var(--arcor-azul); color: white; border: none; border-radius: 11px; font-size: 16px; font-weight: 700; cursor: pointer; font-family: inherit; letter-spacing: 1.5px; text-transform: uppercase; margin-top: 8px; transition: background 0.2s; }
+  .btn-enviar:hover { background: var(--arcor-azul-oscuro); }
+  .btn-enviar:disabled { background: #9ca3af; cursor: not-allowed; }
+  .toast { display: none; text-align: center; padding: 15px; font-weight: 700; font-size: 13px; border-radius: 9px; margin-top: 14px; text-transform: uppercase; letter-spacing: 1px; }
+  .toast.visible { display: block; }
+  .toast.ok { background: var(--verde-claro); color: var(--verde); border: 1.5px solid var(--verde); }
+  .toast.err { background: var(--rojo-claro); color: var(--rojo); border: 1.5px solid var(--rojo); }
+  .toast.cargando { background: #e0e7ff; color: var(--arcor-azul); border: 1.5px solid var(--arcor-azul); }
+  .footer { text-align: center; padding: 14px; font-size: 10px; color: var(--texto-suave); text-transform: uppercase; letter-spacing: 1px; }
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="container">
+    <div class="header">
+      <div class="logo-circle">
+        <svg width="48" height="48" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+          <ellipse cx="100" cy="105" rx="90" ry="78" fill="#003087"/>
+          <ellipse cx="100" cy="98" rx="82" ry="70" fill="#0046b8"/>
+          <path d="M30 130 Q100 40 170 130" fill="none" stroke="#F5A800" stroke-width="22" stroke-linecap="round"/>
+          <text x="100" y="145" text-anchor="middle" font-family="Arial Black,sans-serif" font-size="38" font-weight="900" fill="white" letter-spacing="-1">ARCOR</text>
+        </svg>
+      </div>
+      <div class="header-text">
+        <h1>Control de Merma</h1>
+        <p>Sistema de relevamiento — ARCOR</p>
+      </div>
+    </div>
+
+    <div class="form-body">
+      <div class="banner cargando" id="banner">⏳ Cargando datos desde Google Sheets...</div>
+
+      <div class="seccion-titulo">👤 Identificación del repositor</div>
+      <div class="campo">
+        <label>Código / CI del repositor</label>
+        <input type="number" id="ci-input" placeholder="Ej: 4627245" oninput="validarCI(this)" autocomplete="off" inputmode="numeric">
+        <div class="msg-error" id="ci-error">⚠ CI no encontrado en el sistema</div>
+        <div class="msg-ok" id="ci-ok">✔ Repositor identificado</div>
+        <div id="ci-badge"></div>
+      </div>
+      <div class="campo" id="campo-pdv" style="display:none">
+        <label>Punto de venta</label>
+        <select id="pdv"><option value="">— Seleccionar PDV —</option></select>
+      </div>
+
+      <hr class="divider">
+      <div class="seccion-titulo">📋 Tipo de reporte</div>
+
+      <div class="tabs">
+        <button type="button" class="tab act-venc" id="tab-venc" onclick="cambiarTab('venc')">📅 Vencidos</button>
+        <button type="button" class="tab" id="tab-aver" onclick="cambiarTab('aver')">⚠️ Averiados</button>
+      </div>
+
+      <div id="panel-venc" class="panel activo">
+        <div class="pregunta-box">
+          <span>¿Hay productos vencidos?</span>
+          <div class="btns-sn">
+            <button type="button" class="btn-sn" id="venc-si" onclick="decidir('venc',true)">SÍ</button>
+            <button type="button" class="btn-sn" id="venc-no" onclick="decidir('venc',false)">NO</button>
+          </div>
+        </div>
+        <div class="productos-seccion" id="sec-venc">
+          <div id="cont-venc"></div>
+          <button type="button" class="btn-agregar" onclick="agregarFila('venc')">+ Añadir producto vencido</button>
+        </div>
+      </div>
+
+      <div id="panel-aver" class="panel">
+        <div class="pregunta-box">
+          <span>¿Hay productos averiados?</span>
+          <div class="btns-sn">
+            <button type="button" class="btn-sn" id="aver-si" onclick="decidir('aver',true)">SÍ</button>
+            <button type="button" class="btn-sn" id="aver-no" onclick="decidir('aver',false)">NO</button>
+          </div>
+        </div>
+        <div class="productos-seccion" id="sec-aver">
+          <div id="cont-aver"></div>
+          <button type="button" class="btn-agregar" onclick="agregarFila('aver')">+ Añadir producto averiado</button>
+        </div>
+      </div>
+
+      <hr class="divider">
+      <button type="button" class="btn-enviar" id="btn-enviar" onclick="enviarFormulario()">✉ Enviar reporte</button>
+      <div class="toast" id="toast"></div>
+    </div>
+    <div class="footer">ARCOR © 2025 — Sistema de Control de Merma</div>
+  </div>
+</div>
+
+<script>
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyQvLuvaZcpt6iRsmdIs1F4TG-ZvPa5Y6DeekAfueyxwtHsBXrn9UALqUeV9gxdKKVw/exec';
+const MOTIVOS = ["CAJA MOJADA","PRODUCTO CONSUMIDO EN PDV","CAJA APLASTADA","CAJA ROTA","PRODUCTO DAÑADO POR ROEDORES","OTROS (ESPECIFICAR)"];
+let REPOSITORES = [], PRODUCTOS = [], repoActivo = null;
+let respuestas = { venc: null, aver: null };
+let contadores = { venc: 0, aver: 0 };
+let hlProd = {};
+
+async function cargarDatos() {
+  const banner = document.getElementById('banner');
+  try {
+    const res = await fetch(SCRIPT_URL);
+    const data = await res.json();
+    REPOSITORES = data.repositores || [];
+    PRODUCTOS = data.productos || [];
+    const sel = document.getElementById('pdv');
+    sel.innerHTML = '<option value="">— Seleccionar PDV —</option>';
+    (data.pdvs || []).forEach(p => { const o = document.createElement('option'); o.value = p; o.textContent = p; sel.appendChild(o); });
+    banner.textContent = '✔ Datos cargados — ' + REPOSITORES.length + ' repositores · ' + PRODUCTOS.length + ' productos · ' + (data.pdvs||[]).length + ' PDV';
+    banner.className = 'banner ok';
+    setTimeout(() => banner.style.display = 'none', 4000);
+  } catch(err) {
+    banner.textContent = '✖ Error al cargar datos. Verificá tu conexión e intentá recargar la página.';
+    banner.className = 'banner err';
+  }
+}
+
+function validarCI(input) {
+  const ci = String(input.value).trim();
+  const repo = REPOSITORES.find(r => String(r.ci).trim() === ci);
+  const err = document.getElementById('ci-error');
+  const ok = document.getElementById('ci-ok');
+  const badge = document.getElementById('ci-badge');
+  const campoPdv = document.getElementById('campo-pdv');
+  if (ci.length >= 6) {
+    if (repo) {
+      input.className = 'valido'; err.style.display = 'none'; ok.style.display = 'block';
+      badge.innerHTML = '<span class="badge-ci">👤 ' + repo.nombre + '</span>';
+      repoActivo = repo; campoPdv.style.display = 'block';
+    } else {
+      input.className = 'error-field'; ok.style.display = 'none'; err.style.display = 'block';
+      badge.innerHTML = ''; repoActivo = null; campoPdv.style.display = 'none';
+    }
+  } else {
+    input.className = ''; ok.style.display = 'none'; err.style.display = 'none';
+    badge.innerHTML = ''; repoActivo = null; campoPdv.style.display = 'none';
+  }
+}
+
+function cambiarTab(tab) {
+  document.getElementById('panel-venc').classList.toggle('activo', tab === 'venc');
+  document.getElementById('panel-aver').classList.toggle('activo', tab === 'aver');
+  document.getElementById('tab-venc').className = 'tab' + (tab === 'venc' ? ' act-venc' : '');
+  document.getElementById('tab-aver').className = 'tab' + (tab === 'aver' ? ' act-aver' : '');
+}
+
+function decidir(tipo, si) {
+  respuestas[tipo] = si;
+  document.getElementById(tipo+'-si').className = 'btn-sn' + (si ? ' act-si' : '');
+  document.getElementById(tipo+'-no').className = 'btn-sn' + (!si ? ' act-no' : '');
+  const sec = document.getElementById('sec-'+tipo);
+  if (si) { sec.style.display = 'block'; if (document.getElementById('cont-'+tipo).children.length === 0) agregarFila(tipo); }
+  else { sec.style.display = 'none'; document.getElementById('cont-'+tipo).innerHTML = ''; contadores[tipo] = 0; }
+}
+
+function agregarFila(tipo) {
+  const cont = document.getElementById('cont-'+tipo);
+  contadores[tipo]++;
+  const n = contadores[tipo];
+  const uid = 'p' + Date.now() + Math.random().toString(36).slice(2,5);
+  hlProd[uid] = -1;
+  const div = document.createElement('div');
+  div.className = 'producto-row tipo-'+tipo;
+  div.id = 'row-'+uid;
+  const campoExtra = tipo === 'venc'
+    ? `<div class="campo"><label>Fecha de vencimiento</label><input type="date" class="p-fecha" required></div>`
+    : `<div class="campo"><label>Motivo de avería</label><div class="checklist">${MOTIVOS.map(m=>`<label class="chk-item"><input type="checkbox" value="${m}" ${m.includes('OTROS')?`onchange="toggleOtros('${uid}',this)"`:''}>${m}</label>`).join('')}<input type="text" class="input-otros" id="otros-${uid}" placeholder="Especificar motivo..." oninput="this.value=this.value.toUpperCase()"></div></div>`;
+  div.innerHTML = `<div class="row-num">📦 Producto #${n}</div>
+    <button type="button" class="btn-eliminar" onclick="document.getElementById('row-${uid}').remove()">🗑 Eliminar</button>
+    <div class="campo"><label>Producto</label><div class="ac-wrapper">
+      <input type="text" class="p-prod" placeholder="Buscar producto..." autocomplete="off"
+        oninput="filtrarProd(this,'${uid}')" onkeydown="navProd(event,'${uid}')" onfocus="filtrarProd(this,'${uid}')">
+      <div class="ac-dropdown" id="drop-${uid}"></div></div></div>
+    <div class="fila-doble">${campoExtra}<div class="campo"><label>Cantidad</label><input type="number" class="p-cant" min="1" placeholder="Ej: 5" inputmode="numeric" required></div></div>`;
+  cont.appendChild(div);
+}
+
+function filtrarProd(input, uid) {
+  const q = input.value.toUpperCase(); input.value = q;
+  const drop = document.getElementById('drop-'+uid);
+  const filtrados = PRODUCTOS.filter(p => p.toUpperCase().includes(q));
+  if (!q || filtrados.length === 0) { drop.innerHTML = q ? '<div class="ac-vacio">Sin resultados</div>' : ''; drop.className = 'ac-dropdown' + (q ? ' open' : ''); return; }
+  drop.innerHTML = filtrados.map((p,i) => `<div class="ac-item" onclick="selProd('${uid}','${p}')" data-i="${i}">${p}</div>`).join('');
+  drop.className = 'ac-dropdown open'; hlProd[uid] = -1;
+}
+
+function selProd(uid, valor) { document.getElementById('row-'+uid).querySelector('.p-prod').value = valor; document.getElementById('drop-'+uid).className = 'ac-dropdown'; }
+
+function navProd(event, uid) {
+  const drop = document.getElementById('drop-'+uid);
+  const items = drop.querySelectorAll('.ac-item');
+  if (!items.length) return;
+  if (event.key === 'ArrowDown') { event.preventDefault(); hlProd[uid] = Math.min(hlProd[uid]+1, items.length-1); }
+  else if (event.key === 'ArrowUp') { event.preventDefault(); hlProd[uid] = Math.max(hlProd[uid]-1, 0); }
+  else if (event.key === 'Enter' && hlProd[uid] >= 0) { event.preventDefault(); items[hlProd[uid]].click(); return; }
+  else if (event.key === 'Escape') { drop.className = 'ac-dropdown'; return; }
+  items.forEach((it,i) => it.classList.toggle('hl', i === hlProd[uid]));
+}
+
+function toggleOtros(uid, chk) { const inp = document.getElementById('otros-'+uid); inp.style.display = chk.checked ? 'block' : 'none'; if (!chk.checked) inp.value = ''; }
+
+function mostrarToast(msg, tipo) {
+  const t = document.getElementById('toast'); t.textContent = msg; t.className = 'toast visible ' + tipo;
+  if (tipo !== 'cargando') setTimeout(() => t.className = 'toast', 6000);
+}
+
+function resetFormulario() {
+  document.getElementById('ci-input').value = ''; document.getElementById('ci-input').className = '';
+  document.getElementById('ci-ok').style.display = 'none'; document.getElementById('ci-error').style.display = 'none';
+  document.getElementById('ci-badge').innerHTML = ''; document.getElementById('campo-pdv').style.display = 'none';
+  document.getElementById('pdv').selectedIndex = 0; repoActivo = null;
+  respuestas = { venc: null, aver: null }; contadores = { venc: 0, aver: 0 };
+  ['venc','aver'].forEach(t => { document.getElementById(t+'-si').className = 'btn-sn'; document.getElementById(t+'-no').className = 'btn-sn'; document.getElementById('sec-'+t).style.display = 'none'; document.getElementById('cont-'+t).innerHTML = ''; });
+  cambiarTab('venc');
+}
+
+async function enviarFormulario() {
+  if (!repoActivo) { mostrarToast('⚠ Ingrese un CI válido de repositor', 'err'); return; }
+  if (!document.getElementById('pdv').value) { mostrarToast('⚠ Seleccione un punto de venta', 'err'); return; }
+  if (respuestas.venc === null || respuestas.aver === null) { mostrarToast('⚠ Debe responder ambas secciones: Vencidos y Averiados', 'err'); return; }
+  const vencidos = [], averiados = []; let hayError = false;
+  document.querySelectorAll('#cont-venc .producto-row').forEach(r => {
+    const prod = r.querySelector('.p-prod').value.trim();
+    if (!prod) { r.querySelector('.p-prod').classList.add('error-field'); hayError = true; return; }
+    vencidos.push({ producto: prod, fecha_vencimiento: r.querySelector('.p-fecha') ? r.querySelector('.p-fecha').value : '', cantidad: r.querySelector('.p-cant').value });
+  });
+  document.querySelectorAll('#cont-aver .producto-row').forEach(r => {
+    const prod = r.querySelector('.p-prod').value.trim();
+    if (!prod) { r.querySelector('.p-prod').classList.add('error-field'); hayError = true; return; }
+    let motivos = [];
+    r.querySelectorAll('.checklist input[type="checkbox"]:checked').forEach(chk => { motivos.push(chk.value.includes('OTROS') ? 'OTROS: ' + (r.querySelector('.input-otros').value || 'SIN ESPECIFICAR') : chk.value); });
+    averiados.push({ producto: prod, motivo: motivos.join(' | '), cantidad: r.querySelector('.p-cant').value });
+  });
+  if (hayError) { mostrarToast('⚠ Complete todos los campos de producto', 'err'); return; }
+  if (respuestas.venc && vencidos.length === 0) { mostrarToast('⚠ Añada al menos un producto vencido', 'err'); return; }
+  if (respuestas.aver && averiados.length === 0) { mostrarToast('⚠ Añada al menos un producto averiado', 'err'); return; }
+  const btn = document.getElementById('btn-enviar');
+  btn.disabled = true; mostrarToast('⏳ Enviando reporte...', 'cargando');
+  const payload = { ci: repoActivo.ci, repositor: repoActivo.nombre, pdv: document.getElementById('pdv').value, timestamp: new Date().toLocaleString('es-PY'), vencidos, averiados };
+  try {
+    await fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+    mostrarToast('✔ Reporte enviado correctamente a Google Sheets', 'ok');
+    btn.disabled = false; btn.innerHTML = '✉ Enviar reporte';
+    setTimeout(() => resetFormulario(), 4000);
+  } catch(err) {
+    mostrarToast('✖ Error de conexión. Verificá tu internet e intentá nuevamente', 'err');
+    btn.disabled = false; btn.innerHTML = '✉ Enviar reporte';
+  }
+}
+
+document.addEventListener('click', function(e) { document.querySelectorAll('.ac-dropdown.open').forEach(d => { if (!d.parentElement.contains(e.target)) d.className = 'ac-dropdown'; }); });
+
+cargarDatos();
+</script>
+</body>
+</html>
