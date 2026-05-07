@@ -111,4 +111,322 @@
 
   .pregunta-box { background: var(--azul-palido); border: 1px solid var(--azul-claro); border-radius: 10px; padding: 16px; text-align: center; margin-bottom: 16px; }
   .pregunta-box span { font-size: 12px; font-weight: 600; color: var(--azul); text-transform: uppercase; letter-spacing: 0.5px; }
-  .btns-sn { display: flex; gap: 10px; max-width: 200px; margin: 1
+  .btns-sn { display: flex; gap: 10px; max-width: 200px; margin: 12px auto 0; }
+  .btn-sn  { flex: 1; padding: 11px; border: 1px solid var(--borde); border-radius: 8px; background: white; cursor: pointer; font-weight: 600; font-size: 12px; font-family: inherit; text-transform: uppercase; transition: all 0.2s; color: var(--texto-suave); }
+  .btn-sn.act-si { background: var(--verde-claro); color: var(--verde); border-color: var(--verde-borde); }
+  .btn-sn.act-no { background: var(--rojo-claro);  color: var(--rojo);  border-color: var(--rojo-borde); }
+
+  .productos-seccion { display: none; }
+  .producto-row { background: var(--blanco); border: 1px solid var(--borde); border-radius: 10px; padding: 16px; margin-bottom: 12px; position: relative; }
+  .producto-row.tipo-venc { border-left: 4px solid var(--dorado-borde); }
+  .producto-row.tipo-aver { border-left: 4px solid var(--rojo-borde); }
+  .row-num { font-size: 10px; font-weight: 700; color: var(--texto-claro); margin-bottom: 14px; text-transform: uppercase; letter-spacing: 1.5px; }
+  .fila-doble { display: flex; gap: 12px; }
+  .fila-doble > div { flex: 1; }
+  @media (max-width: 480px) { .fila-doble { flex-direction: column; } }
+
+  .btn-eliminar { position: absolute; top: 12px; right: 12px; background: var(--rojo-claro); color: var(--rojo); border: 1px solid var(--rojo-borde); border-radius: 6px; padding: 5px 10px; font-size: 10px; font-weight: 700; cursor: pointer; font-family: inherit; text-transform: uppercase; }
+  .btn-agregar  { width: 100%; padding: 13px; border: 1.5px dashed var(--borde); border-radius: 8px; background: transparent; color: var(--texto-suave); font-weight: 600; font-size: 12px; cursor: pointer; margin-top: 6px; font-family: inherit; text-transform: uppercase; letter-spacing: 0.5px; transition: all 0.2s; }
+  .btn-agregar:hover { background: var(--azul-palido); border-color: var(--azul-medio); color: var(--azul-medio); }
+
+  .checklist { background: white; border: 1px solid var(--borde); border-radius: 8px; overflow: hidden; margin-top: 6px; }
+  .chk-item { display: block; cursor: pointer; border-bottom: 1px solid var(--gris-claro); }
+  .chk-item:last-child { border-bottom: none; }
+  .chk-item input[type="checkbox"] { display: none; }
+  .chk-label { display: flex; align-items: center; gap: 10px; padding: 10px 14px; font-size: 12px; font-weight: 500; color: var(--texto); transition: background 0.15s; }
+  .chk-item:hover .chk-label { background: var(--azul-palido); }
+  .chk-box { width: 18px; height: 18px; min-width: 18px; border: 2px solid var(--borde); border-radius: 4px; background: white; display: flex; align-items: center; justify-content: center; transition: all 0.15s; flex-shrink: 0; }
+  .chk-item input[type="checkbox"]:checked + .chk-label { background: var(--azul-palido); color: var(--azul); font-weight: 600; }
+  .chk-item input[type="checkbox"]:checked + .chk-label .chk-box { background: var(--azul-medio); border-color: var(--azul-medio); }
+  .chk-tick { width: 4px; height: 8px; border: 2px solid white; border-top: none; border-left: none; transform: rotate(45deg) translateY(-1px); display: none; }
+  .chk-item input[type="checkbox"]:checked + .chk-label .chk-tick { display: block; }
+  .input-otros { display: none; margin: 0 12px 10px; width: calc(100% - 24px); padding: 9px 12px; border: 1px solid var(--borde); border-radius: 6px; font-size: 12px; font-family: inherit; text-transform: uppercase; outline: none; background: white; }
+  .input-otros:focus { border-color: var(--azul-medio); box-shadow: 0 0 0 3px var(--azul-claro); }
+
+  .divider { border: none; border-top: 1px solid var(--gris-claro); margin: 22px 0; }
+  .btn-enviar { width: 100%; padding: 16px; background: var(--azul); color: white; border: none; border-radius: 10px; font-size: 14px; font-weight: 700; cursor: pointer; font-family: inherit; letter-spacing: 1px; text-transform: uppercase; margin-top: 6px; transition: background 0.2s; }
+  .btn-enviar:hover    { background: var(--azul-medio); }
+  .btn-enviar:disabled { background: var(--texto-claro); cursor: not-allowed; }
+
+  .toast { display: none; text-align: center; padding: 13px 16px; font-weight: 600; font-size: 12px; border-radius: 8px; margin-top: 12px; letter-spacing: 0.5px; border: 1px solid; line-height: 1.6; }
+  .toast.visible  { display: block; }
+  .toast.ok       { background: var(--verde-claro); color: var(--verde); border-color: var(--verde-borde); }
+  .toast.err      { background: var(--rojo-claro);  color: var(--rojo);  border-color: var(--rojo-borde); }
+  .toast.cargando { background: var(--azul-claro);  color: var(--azul);  border-color: #b0c8ea; }
+
+  .footer { text-align: center; padding: 14px 20px; font-size: 10px; color: var(--texto-claro); text-transform: uppercase; letter-spacing: 1px; border-top: 1px solid var(--gris-claro); }
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="container">
+
+    <div class="header">
+      <div class="header-logo">
+        <img src="data:image/png;base64,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AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" alt="ARCOR">
+      </div>
+      <div class="header-info">
+        <h1>Control de Vencidos y Averiados</h1>
+        <p>Sistema de relevamiento — ARCOR</p>
+      </div>
+    </div>
+
+    <div class="form-body">
+
+      <div class="banner cargando" id="banner">
+        <div class="spinner-wrap">
+          <div class="spinner"></div>
+          <div>
+            <div class="spinner-txt">Cargando, aguarde por favor...</div>
+            <div class="spinner-sub">Si demora demasiado, recargue la pagina e intente nuevamente</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="seccion-titulo">Identificacion del repositor</div>
+
+      <div class="campo">
+        <label>CI del Repositor</label>
+        <input type="number" id="ci-input" placeholder="Ingrese su cedula de identidad" oninput="validarCI(this)" autocomplete="off" inputmode="numeric">
+        <div class="msg-error" id="ci-error">El CI ingresado no esta registrado en el sistema</div>
+        <div class="ci-hint" id="ci-hint">Ingrese su cedula para que el formulario se habilite automaticamente</div>
+        <div class="msg-ok" id="ci-ok">Repositor identificado correctamente</div>
+        <div id="ci-badge"></div>
+      </div>
+
+      <div class="seccion-inferior" id="seccion-inferior">
+
+        <div class="campo">
+          <label>Punto de venta</label>
+          <select id="pdv"><option value="">Seleccionar punto de venta...</option></select>
+        </div>
+
+        <hr class="divider">
+        <div class="seccion-titulo">Tipo de reporte</div>
+
+        <div class="tabs">
+          <button type="button" class="tab act-venc" id="tab-venc" onclick="cambiarTab('venc')">Productos Vencidos</button>
+          <button type="button" class="tab" id="tab-aver" onclick="cambiarTab('aver')">Productos Averiados</button>
+        </div>
+
+        <div id="panel-venc" class="panel activo">
+          <div class="pregunta-box">
+            <span>Hay productos vencidos para reportar?</span>
+            <div class="btns-sn">
+              <button type="button" class="btn-sn" id="venc-si" onclick="decidir('venc',true)">Si</button>
+              <button type="button" class="btn-sn" id="venc-no" onclick="decidir('venc',false)">No</button>
+            </div>
+          </div>
+          <div class="productos-seccion" id="sec-venc">
+            <div id="cont-venc"></div>
+            <button type="button" class="btn-agregar" onclick="agregarFila('venc')">+ Agregar producto vencido</button>
+          </div>
+        </div>
+
+        <div id="panel-aver" class="panel">
+          <div class="pregunta-box">
+            <span>Hay productos averiados para reportar?</span>
+            <div class="btns-sn">
+              <button type="button" class="btn-sn" id="aver-si" onclick="decidir('aver',true)">Si</button>
+              <button type="button" class="btn-sn" id="aver-no" onclick="decidir('aver',false)">No</button>
+            </div>
+          </div>
+          <div class="productos-seccion" id="sec-aver">
+            <div id="cont-aver"></div>
+            <button type="button" class="btn-agregar" onclick="agregarFila('aver')">+ Agregar producto averiado</button>
+          </div>
+        </div>
+
+        <hr class="divider">
+        <button type="button" class="btn-enviar" id="btn-enviar" onclick="enviarFormulario()">Enviar Reporte</button>
+        <div class="toast" id="toast"></div>
+
+      </div>
+    </div>
+
+    <div class="footer">ARCOR &copy; 2026 &mdash; Sistema de Control de Vencidos y Averiados</div>
+  </div>
+</div>
+
+<script>
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxZsl0Ahg-SLTHUgMKsRG2ccUPwkrbPeCM-AdbPdKMHlxV5_ZiAlXTDEEJFwY76iznW/exec';
+
+const MOTIVOS = ["Caja mojada","Producto consumido en PDV","Caja aplastada","Caja rota","Producto danado por roedores","Otros (especificar)"];
+
+let REPOSITORES = [], PRODUCTOS = [], repoActivo = null;
+let respuestas = { venc: null, aver: null };
+let contadores = { venc: 0, aver: 0 };
+let hlProd = {};
+
+function jsonp(url, cbName) {
+  return new Promise((resolve, reject) => {
+    const script = document.createElement('script');
+    window[cbName] = function(data) { resolve(data); delete window[cbName]; if (script.parentNode) script.parentNode.removeChild(script); };
+    script.src = url + '?callback=' + cbName + '&v=' + Date.now();
+    script.onerror = () => { reject(new Error('red')); delete window[cbName]; if (script.parentNode) script.parentNode.removeChild(script); };
+    document.body.appendChild(script);
+  });
+}
+
+async function cargarDatos() {
+  const banner = document.getElementById('banner');
+  try {
+    const data = await jsonp(SCRIPT_URL, 'cbDatos_' + Date.now());
+    REPOSITORES = data.repositores || [];
+    PRODUCTOS   = data.productos   || [];
+    const sel = document.getElementById('pdv');
+    sel.innerHTML = '<option value="">Seleccionar punto de venta...</option>';
+    (data.pdvs || []).forEach(p => { const o = document.createElement('option'); o.value = p; o.textContent = p; sel.appendChild(o); });
+    banner.style.display = 'none';
+  } catch(err) {
+    banner.innerHTML = '<div class="banner-msg">No fue posible conectar con el sistema en este momento.<br>Verifique su conexion a internet y recargue la pagina.<br>Si el inconveniente persiste, intente nuevamente en unos minutos.</div>';
+    banner.className = 'banner err';
+  }
+}
+
+function validarCI(input) {
+  const ci = String(input.value).trim();
+  const repo = REPOSITORES.find(r => String(r.ci).trim() === ci);
+  const err = document.getElementById('ci-error'), ok = document.getElementById('ci-ok');
+  const badge = document.getElementById('ci-badge'), inferior = document.getElementById('seccion-inferior');
+  if (ci.length >= 6) {
+    if (repo) {
+      input.className = 'valido'; err.style.display = 'none'; ok.style.display = 'block';
+      badge.innerHTML = '<span class="badge-ci">' + repo.nombre + '</span>';
+      repoActivo = repo; inferior.style.display = 'block'; document.getElementById('ci-hint').style.display = 'none';
+    } else {
+      input.className = 'error-field'; ok.style.display = 'none'; err.style.display = 'block';
+      badge.innerHTML = ''; repoActivo = null; inferior.style.display = 'none';
+    }
+  } else {
+    input.className = ''; ok.style.display = 'none'; err.style.display = 'none';
+    badge.innerHTML = ''; repoActivo = null; inferior.style.display = 'none';
+  }
+}
+
+function cambiarTab(tab) {
+  document.getElementById('panel-venc').classList.toggle('activo', tab === 'venc');
+  document.getElementById('panel-aver').classList.toggle('activo', tab === 'aver');
+  document.getElementById('tab-venc').className = 'tab' + (tab === 'venc' ? ' act-venc' : '');
+  document.getElementById('tab-aver').className = 'tab' + (tab === 'aver' ? ' act-aver' : '');
+}
+
+function decidir(tipo, si) {
+  respuestas[tipo] = si;
+  document.getElementById(tipo+'-si').className = 'btn-sn' + (si ? ' act-si' : '');
+  document.getElementById(tipo+'-no').className = 'btn-sn' + (!si ? ' act-no' : '');
+  const sec = document.getElementById('sec-'+tipo);
+  if (si) { sec.style.display = 'block'; if (document.getElementById('cont-'+tipo).children.length === 0) agregarFila(tipo); }
+  else { sec.style.display = 'none'; document.getElementById('cont-'+tipo).innerHTML = ''; contadores[tipo] = 0; }
+}
+
+function agregarFila(tipo) {
+  const cont = document.getElementById('cont-'+tipo);
+  contadores[tipo]++; const n = contadores[tipo];
+  const uid = 'p' + Date.now() + Math.random().toString(36).slice(2,5);
+  hlProd[uid] = -1;
+  const div = document.createElement('div');
+  div.className = 'producto-row tipo-'+tipo; div.id = 'row-'+uid;
+  const campoExtra = tipo === 'venc'
+    ? `<div class="campo"><label>Fecha de vencimiento</label><input type="date" class="p-fecha" required></div>`
+    : `<div class="campo"><label>Motivo de averia</label><div class="checklist">${MOTIVOS.map(m=>`<label class="chk-item"><input type="checkbox" value="${m}" ${m.includes('Otros')?`onchange="toggleOtros('${uid}',this)"`:''}>` + `<span class="chk-label"><span class="chk-box"><span class="chk-tick"></span></span><span>${m}</span></span></label>`).join('')}<input type="text" class="input-otros" id="otros-${uid}" placeholder="Especificar motivo..." oninput="this.value=this.value.toUpperCase()"></div></div>`;
+  div.innerHTML = `
+    <div class="row-num">Producto N&deg; ${n}</div>
+    <button type="button" class="btn-eliminar" onclick="document.getElementById('row-${uid}').remove()">Eliminar</button>
+    <div class="campo"><label>Producto</label><div class="ac-wrapper">
+      <input type="text" class="p-prod" placeholder="Buscar producto..." autocomplete="off"
+        oninput="filtrarProd(this,'${uid}')" onkeydown="navProd(event,'${uid}')" onfocus="filtrarProd(this,'${uid}')">
+      <div class="ac-dropdown" id="drop-${uid}"></div></div></div>
+    <div class="fila-doble">${campoExtra}
+      <div class="campo"><label>Cantidad</label><input type="number" class="p-cant" min="1" placeholder="0" inputmode="numeric" required oninput="this.classList.remove('error-field')"></div>
+    </div>`;
+  cont.appendChild(div);
+}
+
+function filtrarProd(input, uid) {
+  const q = input.value.toUpperCase(); input.value = q;
+  const drop = document.getElementById('drop-'+uid);
+  const filtrados = PRODUCTOS.filter(p => p.toUpperCase().includes(q));
+  if (!q || filtrados.length === 0) { drop.innerHTML = q ? '<div class="ac-vacio">Sin resultados</div>' : ''; drop.className = 'ac-dropdown' + (q ? ' open' : ''); return; }
+  drop.innerHTML = filtrados.map((p,i) => `<div class="ac-item" onclick="selProd('${uid}','${p}')" data-i="${i}">${p}</div>`).join('');
+  drop.className = 'ac-dropdown open'; hlProd[uid] = -1;
+}
+
+function selProd(uid, valor) { document.getElementById('row-'+uid).querySelector('.p-prod').value = valor; document.getElementById('drop-'+uid).className = 'ac-dropdown'; }
+
+function navProd(event, uid) {
+  const drop = document.getElementById('drop-'+uid); const items = drop.querySelectorAll('.ac-item');
+  if (!items.length) return;
+  if (event.key === 'ArrowDown') { event.preventDefault(); hlProd[uid] = Math.min(hlProd[uid]+1, items.length-1); }
+  else if (event.key === 'ArrowUp') { event.preventDefault(); hlProd[uid] = Math.max(hlProd[uid]-1, 0); }
+  else if (event.key === 'Enter' && hlProd[uid] >= 0) { event.preventDefault(); items[hlProd[uid]].click(); return; }
+  else if (event.key === 'Escape') { drop.className = 'ac-dropdown'; return; }
+  items.forEach((it,i) => it.classList.toggle('hl', i === hlProd[uid]));
+}
+
+function toggleOtros(uid, chk) { const inp = document.getElementById('otros-'+uid); inp.style.display = chk.checked ? 'block' : 'none'; if (!chk.checked) inp.value = ''; }
+
+function mostrarToast(msg, tipo) {
+  const t = document.getElementById('toast'); t.innerHTML = msg; t.className = 'toast visible ' + tipo;
+  if (tipo !== 'cargando') setTimeout(() => t.className = 'toast', 7000);
+}
+
+function resetFormulario() {
+  document.getElementById('ci-input').value = ''; document.getElementById('ci-input').className = '';
+  document.getElementById('ci-ok').style.display = 'none'; document.getElementById('ci-error').style.display = 'none';
+  document.getElementById('ci-badge').innerHTML = ''; document.getElementById('seccion-inferior').style.display = 'none'; document.getElementById('ci-hint').style.display = 'block';
+  document.getElementById('pdv').selectedIndex = 0;
+  repoActivo = null; respuestas = { venc: null, aver: null }; contadores = { venc: 0, aver: 0 };
+  ['venc','aver'].forEach(t => { document.getElementById(t+'-si').className = 'btn-sn'; document.getElementById(t+'-no').className = 'btn-sn'; document.getElementById('sec-'+t).style.display = 'none'; document.getElementById('cont-'+t).innerHTML = ''; });
+  cambiarTab('venc');
+}
+
+async function enviarFormulario() {
+  if (!repoActivo) { mostrarToast('Por favor ingrese su cedula de identidad para continuar', 'err'); return; }
+  if (!document.getElementById('pdv').value) { mostrarToast('Por favor seleccione un punto de venta', 'err'); return; }
+  if (respuestas.venc === null || respuestas.aver === null) { mostrarToast('Complete ambas secciones antes de enviar', 'err'); return; }
+
+  const vencidos = [], averiados = []; let hayError = false;
+  document.querySelectorAll('#cont-venc .producto-row').forEach(r => {
+    const prod = r.querySelector('.p-prod').value.trim();
+    if (!prod) { r.querySelector('.p-prod').classList.add('error-field'); hayError = true; return; }
+    const cant_v = r.querySelector('.p-cant').value;
+    if (!cant_v || parseInt(cant_v) < 1) { r.querySelector('.p-cant').classList.add('error-field'); hayError = true; return; }
+    vencidos.push({ producto: prod, fecha_vencimiento: r.querySelector('.p-fecha') ? r.querySelector('.p-fecha').value : '', cantidad: cant_v });
+  });
+  document.querySelectorAll('#cont-aver .producto-row').forEach(r => {
+    const prod = r.querySelector('.p-prod').value.trim();
+    if (!prod) { r.querySelector('.p-prod').classList.add('error-field'); hayError = true; return; }
+    let motivos = [];
+    r.querySelectorAll('.checklist input[type="checkbox"]:checked').forEach(chk => { motivos.push(chk.value.includes('Otros') ? 'Otros: ' + (r.querySelector('.input-otros').value || 'Sin especificar') : chk.value); });
+    const cant_a = r.querySelector('.p-cant').value;
+    if (!cant_a || parseInt(cant_a) < 1) { r.querySelector('.p-cant').classList.add('error-field'); hayError = true; return; }
+    averiados.push({ producto: prod, motivo: motivos.join(' | '), cantidad: cant_a });
+  });
+
+  if (hayError) { mostrarToast('Verifique que todos los productos tengan nombre y cantidad indicada', 'err'); return; }
+  if (respuestas.venc && vencidos.length === 0) { mostrarToast('Agregue al menos un producto vencido', 'err'); return; }
+  if (respuestas.aver && averiados.length === 0) { mostrarToast('Agregue al menos un producto averiado', 'err'); return; }
+
+  const btn = document.getElementById('btn-enviar');
+  btn.disabled = true; mostrarToast('Enviando reporte, por favor espere...', 'cargando');
+
+  const payload = { ci: repoActivo.ci, repositor: repoActivo.nombre, pdv: document.getElementById('pdv').value, timestamp: new Date().toLocaleString('es-PY'), vencidos, averiados };
+
+  try {
+    await fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+    mostrarToast('El reporte fue enviado correctamente. Muchas gracias.', 'ok');
+    btn.disabled = false; btn.textContent = 'Enviar Reporte';
+    setTimeout(() => resetFormulario(), 5000);
+  } catch(err) {
+    mostrarToast('No se pudo enviar el reporte en este momento.<br>Verifique su conexion e intente nuevamente.', 'err');
+    btn.disabled = false; btn.textContent = 'Enviar Reporte';
+  }
+}
+
+document.addEventListener('click', function(e) { document.querySelectorAll('.ac-dropdown.open').forEach(d => { if (!d.parentElement.contains(e.target)) d.className = 'ac-dropdown'; }); });
+
+cargarDatos();
+</script>
+</body>
+</html>
